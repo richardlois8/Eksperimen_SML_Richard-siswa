@@ -30,10 +30,10 @@ jobs:
       run: |
         python preprocessing/automate_Richard-siswa.py mobile_price_classification_raw/train.csv
         mkdir -p mobile_price_classification_preprocessing
-        mv X_preprocessing.csv output/X_preprocessing.csv
-        mv y_preprocessing.csv output/y_preprocessing.csv
+        mv X_preprocessing.csv mobile_price_classification_preprocessing/X_preprocessing.csv
+        mv y_preprocessing.csv mobile_price_classification_preprocessing/y_preprocessing.csv
 
-    - name: Upload output (optional)
+    - name: Upload output 
       uses: actions/upload-artifact@v4
       with:
         name: processed-dataset

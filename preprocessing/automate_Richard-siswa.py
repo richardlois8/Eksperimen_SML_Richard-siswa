@@ -7,20 +7,22 @@ def load_data(filepath):
 def preprocess_data(df):
     df = df.drop_duplicates()
     df['screen_area'] = df['px_height'] * df['px_width']
-    X = df.drop('price_range', axis=1)
-    y = df['price_range']
+    
+    features = df.drop('price_range', axis=1)
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    return X_scaled, y
+    features_scaled = scaler.fit_transform(features)
+    
+    features_scaled_df = pd.DataFrame(features_scaled, columns=features.columns)
+    features_scaled_df['price_range'] = df['price_range'].values
+    return features_scaled_df
 
-def save_processed(X, y, out_X='X_preprocessing.csv', out_y='y_preprocessing.csv'):
-    pd.DataFrame(X).to_csv(out_X, index=False)
-    y.to_csv(out_y, index=False)
+def save_processed(df, out_path='mobile_price_classification_preprocessing.csv'):
+    df.to_csv(out_path, index=False)
 
 if __name__ == "__main__":
     import sys
-    filepath = sys.argv[1] 
+    filepath = sys.argv[1]
     df = load_data(filepath)
-    X, y = preprocess_data(df)
-    save_processed(pd.DataFrame(X), y)
-    print("Preprocessing done! Processed data saved.")
+    df_processed = preprocess_data(df)
+    save_processed(df_processed)
+    print("Preprocessing done! Preprocessed data saved as mobile_price_classification_preprocessing.csv")

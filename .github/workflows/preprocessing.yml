@@ -1,0 +1,40 @@
+name: Run Preprocessing
+
+on:
+  push:
+    paths:
+      - '**'
+      - 'mobile_price_classification_raw/**'
+      - '.workflow'
+  workflow_dispatch:
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12.7'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pandas scikit-learn tensorflow seaborn
+
+    - name: Run preprocessing
+      run: |
+        python preprocessing/automate_Richard-siswa.py mobile_price_classification_raw/train.csv
+        mkdir -p mobile_price_classification_preprocessing
+        mv X_preprocessing.csv output/X_preprocessing.csv
+        mv y_preprocessing.csv output/y_preprocessing.csv
+
+    - name: Upload output (optional)
+      uses: actions/upload-artifact@v4
+      with:
+        name: processed-dataset
+        path: mobile_price_classification_preprocessing/
